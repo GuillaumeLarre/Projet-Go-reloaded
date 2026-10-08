@@ -6,6 +6,10 @@ import (
 	"os"
 )
 
+// ============================ //
+// ====== MON PROGRAMME ======= //
+// ============================ //
+
 func main() {
 	if len(os.Args) != 3 {
 		fmt.Println("Mauvais nombre de paramètre renseigné. Le programme doit être exécuté avec 'go run . sample.txt result.txt'")
@@ -16,11 +20,8 @@ func main() {
 		fmt.Println("Erreur :", err)
 		return
 	}
-	mots := regles.DecoupeEnMots(string(contenu))
-	mots = regles.ConvertirHexaEnNombre(mots)
-	mots = regles.ConvertirBinEnNombre(mots)
-	texte := regles.AssembleEnTexte(mots)
-	err = os.WriteFile(os.Args[2], []byte(texte), 0644)
+	texteTraite := regles.Traitement(string(contenu))
+	err = os.WriteFile(os.Args[2], []byte(texteTraite), 0644)
 	if err != nil {
 		fmt.Println("Erreur :", err)
 		return

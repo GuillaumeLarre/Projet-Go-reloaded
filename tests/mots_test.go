@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+// ====================================== //
+// =========== TESTS DECOUPES =========== //
+// ====================================== //
+
 // Tests de la fonction DecoupeEnMots //
 func VerifierDecoupe(t *testing.T, entree string, attendu []string) {
 	resultat := regles.DecoupeEnMots(entree)
@@ -44,4 +48,44 @@ func TestAssembleEnTexteCasNormal(t *testing.T) {
 
 func TestAssembleEnTexteUnSeulMot(t *testing.T) {
 	VerifierAssemble(t, []string{"Bonjour"}, "Bonjour")
+}
+
+// Tests de la fonction DecoupeEnLignes //
+func VerifierDecoupeEnLigne(t *testing.T, entree string, attendu []string) {
+	resultat := regles.DecoupeEnLignes(entree)
+	if !slices.Equal(resultat, attendu) {
+		t.Errorf("Resultat : %q, Attendu : %q", resultat, attendu)
+	}
+}
+
+func TestDecoupeEnLigneCasNormal(t *testing.T) {
+	VerifierDecoupeEnLigne(t, "Hello\nworld", []string{"Hello", "world"})
+}
+
+func TestDecoupeEnLigneSautDeLigneFin(t *testing.T) {
+	VerifierDecoupeEnLigne(t, "Hello\nworld\n", []string{"Hello", "world", ""})
+}
+
+func TestDecoupeEnLigneCasLigneVide(t *testing.T) {
+	VerifierDecoupeEnLigne(t, "Hello\n\nworld", []string{"Hello", "", "world"})
+}
+
+// Tests de la fonction AssembleEnLignes //
+func VerifierAssembleEnLigne(t *testing.T, entree []string, attendu string) {
+	resultat := regles.AssembleEnLignes(entree)
+	if resultat != attendu {
+		t.Errorf("Resultat : %q, Attendu : %q", resultat, attendu)
+	}
+}
+
+func TestAssembleEnLigneCasNormal(t *testing.T) {
+	VerifierAssembleEnLigne(t, []string{"Hello", "world"}, "Hello\nworld")
+}
+
+func TestAssembleEnLigneCasLigneVide(t *testing.T) {
+	VerifierAssembleEnLigne(t, []string{"Hello", "", "world"}, "Hello\n\nworld")
+}
+
+func TestAssembleEnLigneSautDeLigneFin(t *testing.T) {
+	VerifierAssembleEnLigne(t, []string{"Hello", "world", ""}, "Hello\nworld\n")
 }

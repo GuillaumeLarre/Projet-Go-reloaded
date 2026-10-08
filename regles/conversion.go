@@ -3,8 +3,15 @@ package regles
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
+// ================================== //
+// =========== CONVERSION =========== //
+// ================================== //
+
+// Fonction globale pour parcourir des listes de mots //
+// Et appliquer les conversions voulues //
 func Conversion(listeMots []string, marqueur string, base int) []string {
 	var i int
 	nouvelleListe := []string{}
@@ -33,15 +40,19 @@ func Conversion(listeMots []string, marqueur string, base int) []string {
 	return nouvelleListe
 }
 
+// Convertie un hexadécimal en nombre //
 func ConvertirHexaEnNombre(listeMots []string) []string {
 	return Conversion(listeMots, "(hex)", 16)
 }
 
+// Convertie un binaire en nombre //
 func ConvertirBinEnNombre(listeMots []string) []string {
 	return Conversion(listeMots, "(bin)", 2)
 }
 
-func Fusion(listeMots []string, marqueur string) []string {
+// Uniformise l'écriture de différents marqueurs //
+// DecoupeEnMots découpe à chaque espace et peut séparer un indice en deux //
+func Uniformisation(listeMots []string, marqueur string) []string {
 	nouvelleListe := []string{}
 	i := 0
 	for i < len(listeMots) {
@@ -53,6 +64,58 @@ func Fusion(listeMots []string, marqueur string) []string {
 			i++
 		} else {
 			nouvelleListe = append(nouvelleListe, listeMots[i])
+			i++
+		}
+	}
+	return nouvelleListe
+}
+
+// Appel l'uniformisation pour tous les marqueurs //
+func UniformiserMarqueurs(mots []string) []string {
+	nouvelleListe := Uniformisation(mots, "(up,")
+	nouvelleListe = Uniformisation(nouvelleListe, "(low,")
+	nouvelleListe = Uniformisation(nouvelleListe, "(cap,")
+	return nouvelleListe
+}
+
+func AppliquerMarqueurCasse(liste []string, marqueur string, fonction func(string) string) []string {
+	nouvelleListe := []string{}
+	i := 0
+	for i < len(liste) {
+		if len(liste[i]) > len(marqueur) && liste[i][:len(marqueur)] == marqueur {
+			if liste[i][len(marqueur)] == ')' {
+				if len(nouvelleListe) > 0 {
+					nouvelleListe[len(nouvelleListe)-1] = fonction(nouvelleListe[len(nouvelleListe)-1])
+					i++
+				} else {
+					fmt.Println("Erreur : la conversion n'est pas possible, aucun mot à convertir")
+					nouvelleListe = append(nouvelleListe, liste[i])
+					i++
+					continue
+				}
+			} else if liste[i][len(marqueur)] != ')' {
+				prefixe := strings.TrimPrefix(liste[i], marqueur+", ")
+				suffixe := strings.TrimSuffix(prefixe, ")")
+				n, err := strconv.Atoi(suffixe)
+				if err != nil {
+					fmt.Println("Erreur :", err)
+					nouvelleListe = append(nouvelleListe, liste[i])
+					i++
+					continue
+				}
+				if n > len(nouvelleListe) || n <= 0 {
+					fmt.Printf("Erreur : La conversion n'est pas possible l'indice n'a pas une valeur correcte (%d)\n", n)
+					nouvelleListe = append(nouvelleListe, liste[i])
+					i++
+					continue
+				}
+				for indice := 1; indice <= n; indice++ {
+					nouvelleListe[len(nouvelleListe)-indice] = fonction(nouvelleListe[len(nouvelleListe)-indice])
+				}
+				i++
+			}
+		} else {
+			nouvelleListe = append(nouvelleListe, liste[i])
 			i++
 		}
 	}
