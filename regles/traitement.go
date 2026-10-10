@@ -8,6 +8,12 @@ func Traitement(texte string) string {
 		mots = UniformiserMarqueurs(mots)
 		mots = ConvertirHexaEnNombre(mots)
 		mots = ConvertirBinEnNombre(mots)
+		mots = ConvertirListeMotsEnUp(mots)
+		mots = ConvertirListeMotsEnLow(mots)
+		mots = ConvertirListeMotsEnCap(mots)
+		mots = TraitementPonctuation(mots)
+		mots = TraitementAEtAn(mots)
+		mots = TraitementGuillemets(mots)
 		lignes[i] = AssembleEnTexte(mots)
 	}
 	texteTraite := AssembleEnLignes(lignes)

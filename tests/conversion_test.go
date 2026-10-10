@@ -118,6 +118,17 @@ func TestAppliquerMarqueurCasseUpPlusieursMarqueurs(t *testing.T) {
 	VerifierAppliquerMarqueurCasse(t, []string{"Voici", "(up)", "un", "exemple", "(up, 2)"}, "(up", strings.ToUpper, []string{"VOICI", "UN", "EXEMPLE"})
 }
 
+func VerifierConvertirListeMotsEnUp(t *testing.T, entree []string, attendu []string) {
+	resultat := regles.ConvertirListeMotsEnUp(entree)
+	if !slices.Equal(resultat, attendu) {
+		t.Errorf("Resultat : %q, Attendu : %q", resultat, attendu)
+	}
+}
+
+func TestConvertirListeMotsEnUpCasNormal(t *testing.T) {
+	VerifierConvertirListeMotsEnUp(t, []string{"Voici", "un", "exemple", "(up, 2)"}, []string{"Voici", "UN", "EXEMPLE"})
+}
+
 // ================================= //
 // =========== TESTS LOW =========== //
 // ================================= //
@@ -152,4 +163,170 @@ func TestAppliquerMarqueurCasseLowAvecIndiceZero(t *testing.T) {
 
 func TestAppliquerMarqueurCasseLowPlusieursMarqueurs(t *testing.T) {
 	VerifierAppliquerMarqueurCasse(t, []string{"VOICI", "(low)", "UN", "EXEMPLE", "(low, 2)"}, "(low", strings.ToLower, []string{"voici", "un", "exemple"})
+}
+
+func VerifierConvertirListeMotsEnLow(t *testing.T, entree []string, attendu []string) {
+	resultat := regles.ConvertirListeMotsEnLow(entree)
+	if !slices.Equal(resultat, attendu) {
+		t.Errorf("Resultat : %q, Attendu : %q", resultat, attendu)
+	}
+}
+
+func TestConvertirListeMotsEnLowCasNormal(t *testing.T) {
+	VerifierConvertirListeMotsEnLow(t, []string{"VOICI", "UN", "EXEMPLE", "(low, 2)"}, []string{"VOICI", "un", "exemple"})
+}
+
+// ================================= //
+// =========== TESTS CAP =========== //
+// ================================= //
+
+func VerifierConversionCap(t *testing.T, entree string, attendu string) {
+	resultat := regles.ConversionCap(entree)
+	if resultat != attendu {
+		t.Errorf("Resultat : %q, Attendu : %q", resultat, attendu)
+	}
+}
+
+func TestConversionCapAvecAccent(t *testing.T) {
+	VerifierConversionCap(t, "élan", "Élan")
+}
+
+func TestConversionCapMotAvecMaj(t *testing.T) {
+	VerifierConversionCap(t, "bRIDGE", "Bridge")
+}
+
+func TestConversionCapCasNormal(t *testing.T) {
+	VerifierConversionCap(t, "bridge", "Bridge")
+}
+
+func TestConversionCapMotVide(t *testing.T) {
+	VerifierConversionCap(t, "", "")
+}
+
+func VerifierConvertirListeMotsEnCap(t *testing.T, entree []string, attendu []string) {
+	resultat := regles.ConvertirListeMotsEnCap(entree)
+	if !slices.Equal(resultat, attendu) {
+		t.Errorf("Resultat : %q, Attendu : %q", resultat, attendu)
+	}
+}
+
+func TestConvertirListeMotsEnCapSansIndice(t *testing.T) {
+	VerifierConvertirListeMotsEnCap(t, []string{"Bonjour", "voici", "un", "exemple", "(cap)"}, []string{"Bonjour", "voici", "un", "Exemple"})
+}
+
+func TestConvertirListeMotsEnCapPlusieursIndices(t *testing.T) {
+	VerifierConvertirListeMotsEnCap(t, []string{"Bonjour", "vOICI", "(cap, 1)", "UN", "exemple", "(cap, 2)"}, []string{"Bonjour", "Voici", "Un", "Exemple"})
+}
+
+func TestConvertirListeMotsEnCapIndiceInvalide(t *testing.T) {
+	VerifierConvertirListeMotsEnCap(t, []string{"Bonjour", "voici", "un", "exemple", "(cap, -2)"}, []string{"Bonjour", "voici", "un", "exemple", "(cap, -2)"})
+}
+
+// =================================== //
+// =========== PONCTUATION =========== //
+// =================================== //
+
+func VerifierTraitementPonctuation(t *testing.T, entree []string, attendu []string) {
+	resultat := regles.TraitementPonctuation(entree)
+	if !slices.Equal(resultat, attendu) {
+		t.Errorf("Résultat : %q, Attendu : %q", resultat, attendu)
+	}
+}
+
+func TestTraitementPonctuationCasNormal(t *testing.T) {
+	VerifierTraitementPonctuation(t, []string{"Voici,", "un", "exemple"}, []string{"Voici,", "un", "exemple"})
+}
+
+func TestTraitementPonctuationPonctuationApresMot(t *testing.T) {
+	VerifierTraitementPonctuation(t, []string{"Voici", ",un", "exemple"}, []string{"Voici,", "un", "exemple"})
+}
+
+func TestTraitementPonctuationPlusieursPonctuations(t *testing.T) {
+	VerifierTraitementPonctuation(t, []string{"Voici", ",,un", "exemple"}, []string{"Voici,,", "un", "exemple"})
+}
+
+func TestTraitementPonctuationPlusieursCas(t *testing.T) {
+	VerifierTraitementPonctuation(t, []string{"Voici", "?un", "exemple", "."}, []string{"Voici?", "un", "exemple."})
+}
+
+func TestTraitementPonctuationDebutMot(t *testing.T) {
+	VerifierTraitementPonctuation(t, []string{"!Voici", "un", "exemple"}, []string{"!Voici", "un", "exemple"})
+}
+
+func TestTraitementPonctuationMultiplesCas(t *testing.T) {
+	VerifierTraitementPonctuation(t, []string{"%µVoici,", "un", "...exemple", "?", "fin", "!?"}, []string{"%µVoici,", "un...", "exemple?", "fin!?"})
+}
+
+func TestTraitementPonctuationSujet(t *testing.T) {
+	VerifierTraitementPonctuation(t, []string{"then", "BAMM", "!!"}, []string{"then", "BAMM!!"})
+}
+
+func TestTraitementPonctuationSymbolleSpecifique(t *testing.T) {
+	VerifierTraitementPonctuation(t, []string{"then", "BAMM", "…"}, []string{"then", "BAMM…"})
+}
+
+// ================================== //
+// =========== GUILLEMETS =========== //
+// ================================== //
+
+func VerifierTraitementGuillemets(t *testing.T, entree []string, attendu []string) {
+	resultat := regles.TraitementGuillemets(entree)
+	if !slices.Equal(resultat, attendu) {
+		t.Errorf("Resultat : %q, Attendu : %q", resultat, attendu)
+	}
+}
+
+func TestTraitementGuillemetsCasNormal(t *testing.T) {
+	VerifierTraitementGuillemets(t, []string{"'Aucun", "problèmes", "ici'"}, []string{"'Aucun", "problèmes", "ici'"})
+}
+
+func TestTraitementGuillemetsEspaceAvantEtApres(t *testing.T) {
+	VerifierTraitementGuillemets(t, []string{"'", "Aucun", "problèmes", "ici", "'"}, []string{"'Aucun", "problèmes", "ici'"})
+}
+
+func TestTraitementGuillemetsEspaceAvant(t *testing.T) {
+	VerifierTraitementGuillemets(t, []string{"'", "Aucun", "problèmes", "ici'"}, []string{"'Aucun", "problèmes", "ici'"})
+}
+
+func TestTraitementGuillemetPlusieursCasSepares(t *testing.T) {
+	VerifierTraitementGuillemets(t, []string{"'", "hello", "'", "and", "'", "world", "'"}, []string{"'hello'", "and", "'world'"})
+}
+
+func TestTraitementGuillemetPlusieursCasMelange(t *testing.T) {
+	VerifierTraitementGuillemets(t, []string{"'", "hello'", "and", "'world", "'"}, []string{"'hello'", "and", "'world'"})
+}
+
+func TestTraitementGuillemetUnSeul(t *testing.T) {
+	VerifierTraitementGuillemets(t, []string{"I", "said", "yes", "'"}, []string{"I", "said", "yes", "'"})
+}
+
+func TestTraitementGuillemetColle(t *testing.T) {
+	VerifierTraitementGuillemets(t, []string{"'hello", "world'", "and", "'", "x", "'"}, []string{"'hello", "world'", "and", "'x'"})
+}
+
+// ============================ //
+// =========== A/AN =========== //
+// ============================ //
+
+func VerifierTraitementAEtAn(t *testing.T, entree []string, attendu []string) {
+	resultat := regles.TraitementAEtAn(entree)
+	if !slices.Equal(resultat, attendu) {
+		t.Errorf("Resultat : %q, Attendu: %q", resultat, attendu)
+	}
+}
+
+func TestTraitementAEtAnMajuscule(t *testing.T) {
+	VerifierTraitementAEtAn(t, []string{"A", "human"}, []string{"An", "human"})
+}
+
+func TestTraitementAEtAnMinuscule(t *testing.T) {
+	VerifierTraitementAEtAn(t, []string{"a", "apple"}, []string{"an", "apple"})
+}
+
+func TestTraitementAEtAnPlusieursCas(t *testing.T) {
+	VerifierTraitementAEtAn(t, []string{"a", "Elephant", "an", "doctor", "a", "universe", "A", "object"}, []string{"an", "Elephant", "an", "doctor", "an", "universe", "An", "object"})
+}
+
+func TestTraitementAEtAnDernierMot(t *testing.T) {
+	VerifierTraitementAEtAn(t, []string{"I", "want", "a"}, []string{"I", "want", "a"})
 }
