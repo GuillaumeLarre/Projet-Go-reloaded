@@ -1,6 +1,10 @@
 package regles
 
-// Permet de traiter plusieurs lignes séparemment //
+// ========================= //
+// ====== TRAITEMENT ======= //
+// ========================= //
+
+// Applique l'ensemble des règles de conversion, ligne par ligne //
 func Traitement(texte string) string {
 	lignes := DecoupeEnLignes(texte)
 	for i := 0; i < len(lignes); i++ {
