@@ -117,3 +117,21 @@ Le sujet est assez vague et laisse à interprétation, voici mes parties pris :
 
 - Si un guillemet sépare le `a` de son mot (`a 'apple'`), la règle ne s'applique pas.
 - La règle suit le sujet à la lettre : tout mot commençant par `h` déclenche `an`, y compris `house`. `an` n'est jamais transformé en `a`.
+
+**Ordre d'application des marqueurs**
+
+Les marqueurs sont traités par type, dans l'ordre de la chaîne ((hex), (bin), (up), (low), (cap)), et non dans l'ordre où ils apparaissent dans le texte. Pendant le passage d'une règle, les marqueurs des autres types sont encore présents dans la ligne et sont comptés comme des mots.
+
+- `hello (cap) (up)` donne `hello (CAP)` au lieu de `HELLO` : la règle (up) transforme le marqueur (cap), qui n'est ensuite plus reconnu.
+- `one two (low, 2) three (up, 3)` donne `one TWO (LOW, 2) THREE` au lieu de `ONE TWO THREE`.
+
+La correction consisterait à remplacer les règles de marqueurs par une seule passe de gauche à droite, qui applique et retire chaque marqueur à sa position.
+
+**Comptage des mots par les marqueurs**
+
+Un marqueur avec nombre compte tous les éléments qui le précèdent, y compris la ponctuation isolée et les guillemets, qui ne sont rattachés aux mots qu'après les règles de marqueurs.
+
+- `hello , world (up, 2)` donne `hello, WORLD` au lieu de `HELLO, WORLD`.
+- `go ! (up)` transforme le `!` au lieu de `go`.
+
+Ces cas n'apparaissent ni dans le sujet ni dans la grille de correction. Ils seront traités dans go-reforged, qui impose un traitement des modificateurs de gauche à droite et ne compte que les vrais mots.
