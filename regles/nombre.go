@@ -15,14 +15,14 @@ func AppliquerConversion(listeMots []string, marqueur string, base int) []string
 	nouvelleListe := []string{}
 	for i < len(listeMots) {
 		if listeMots[i] == marqueur && i == 0 {
-			fmt.Printf("Erreur : La conversion ne peut être faite que si %s précède un mot\n", marqueur)
+			fmt.Printf("Erreur : La conversion ne peut être faite que si un mot précède %s\n", marqueur)
 			nouvelleListe = append(nouvelleListe, listeMots[i])
 			i++
 		} else if i+1 < len(listeMots) && listeMots[i+1] == marqueur {
 			conversion, err := strconv.ParseInt(listeMots[i], base, 64)
 			texte := strconv.FormatInt(conversion, 10)
 			if err != nil {
-				fmt.Printf("Erreur: La conversion n'est pas posssible, le mot qui précède %s n'est pas convertible\n", marqueur)
+				fmt.Printf("Erreur : La conversion n'est pas possible, le mot qui précède %s n'est pas convertible\n", marqueur)
 				nouvelleListe = append(nouvelleListe, listeMots[i])
 				nouvelleListe = append(nouvelleListe, listeMots[i+1])
 				i += 2
@@ -42,7 +42,7 @@ func AppliquerConversion(listeMots []string, marqueur string, base int) []string
 // =========== HEXA= ========== //
 // ============================ //
 
-// Convertie un hexadécimal en nombre //
+// Convertit un hexadécimal en nombre //
 func ConvertirHexaEnNombre(listeMots []string) []string {
 	return AppliquerConversion(listeMots, "(hex)", 16)
 }
@@ -51,7 +51,7 @@ func ConvertirHexaEnNombre(listeMots []string) []string {
 // =========== BIN =========== //
 // =========================== //
 
-// Convertie un binaire en nombre //
+// Convertit un binaire en nombre //
 func ConvertirBinEnNombre(listeMots []string) []string {
 	return AppliquerConversion(listeMots, "(bin)", 2)
 }

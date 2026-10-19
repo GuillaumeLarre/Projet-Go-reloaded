@@ -47,7 +47,7 @@ func UniformisationApresMarqueur(listeMots []string, marqueur string) []string {
 	return nouvelleListe
 }
 
-// Appel l'uniformisation pour tous les marqueurs //
+// Appelle l'uniformisation pour tous les marqueurs //
 func UniformiserMarqueurs(mots []string) []string {
 	nouvelleListe := UniformisationMarqueurs(mots, "(up,")
 	nouvelleListe = UniformisationMarqueurs(nouvelleListe, "(low,")
@@ -55,6 +55,11 @@ func UniformiserMarqueurs(mots []string) []string {
 	nouvelleListe = UniformisationApresMarqueur(nouvelleListe, "(up,")
 	nouvelleListe = UniformisationApresMarqueur(nouvelleListe, "(low,")
 	nouvelleListe = UniformisationApresMarqueur(nouvelleListe, "(cap,")
+	nouvelleListe = UniformisationApresMarqueur(nouvelleListe, "(up)")
+	nouvelleListe = UniformisationApresMarqueur(nouvelleListe, "(low)")
+	nouvelleListe = UniformisationApresMarqueur(nouvelleListe, "(cap)")
+	nouvelleListe = UniformisationApresMarqueur(nouvelleListe, "(hex)")
+	nouvelleListe = UniformisationApresMarqueur(nouvelleListe, "(bin)")
 	return nouvelleListe
 }
 
@@ -107,7 +112,7 @@ func AppliquerMarqueurCasse(liste []string, marqueur string, fonction func(strin
 // =========== UP =========== //
 // ========================== //
 
-// Convertie le marqueur (up) //
+// Convertit le marqueur (up) //
 func ConvertirListeMotsEnUp(listeMots []string) []string {
 	return AppliquerMarqueurCasse(listeMots, "(up", strings.ToUpper)
 }
@@ -116,7 +121,7 @@ func ConvertirListeMotsEnUp(listeMots []string) []string {
 // =========== LOW =========== //
 // =========================== //
 
-// Convertie le marqueur (low) //
+// Convertit le marqueur (low) //
 func ConvertirListeMotsEnLow(listeMots []string) []string {
 	return AppliquerMarqueurCasse(listeMots, "(low", strings.ToLower)
 }
@@ -142,7 +147,7 @@ func ConversionCap(mot string) string {
 	return nouveauMot
 }
 
-// Converie le marqueur (cap) //
+// Convertit le marqueur (cap) //
 func ConvertirListeMotsEnCap(listeMots []string) []string {
 	return AppliquerMarqueurCasse(listeMots, "(cap", ConversionCap)
 }

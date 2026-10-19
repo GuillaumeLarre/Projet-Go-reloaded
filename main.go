@@ -26,5 +26,5 @@ func main() {
 		fmt.Println("Erreur :", err)
 		return
 	}
-	fmt.Printf("Le fichier %s à bien été crée/modifié", os.Args[2])
+	fmt.Printf("Le fichier %s a bien été créé.\n", os.Args[2])
 }

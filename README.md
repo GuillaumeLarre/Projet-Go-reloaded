@@ -18,14 +18,14 @@ go test ./...
 
 ## Règles à suivre
 
-| Règles:
-
-| `(hex)` : convertit le mot précédent d'hexadécimal en décimal |
-| `(bin)` : convertit le mot précédent de binaire en décimal |
-| `(up)` / `(up, N)` : majuscules sur le ou les N mots précédents |
-| `(low)` / `(low, N)` : minuscules sur le ou les N mots précédents |
-| `(cap)` / `(cap, N)` : majuscule initiale sur le ou les N mots précédents |
-| Ponctuation `. , ! ? : ;` collée au mot précédent, groupes conservés |
+| Marqueur | Effet |
+| --- | --- |
+| `(hex)` | convertit le mot précédent d'hexadécimal en décimal |
+| `(bin)` | convertit le mot précédent de binaire en décimal |
+| `(up)` / `(up, N)` | majuscules sur le ou les N mots précédents |
+| `(low)` / `(low, N)` | minuscules sur le ou les N mots précédents |
+| `(cap)` / `(cap, N)` | majuscule initiale sur le ou les N mots précédents |
+| Ponctuation `. , ! ? : ;` | collée au mot précédent, groupes conservés |
 | Guillemets collés aux mots qu'ils entourent |
 | `a` devient `an` devant une voyelle ou un `h` |
 
@@ -33,7 +33,7 @@ go test ./...
 
 ```
 go-reloaded/
-├── main.go                     lecture des arguments et du fichier, appel du traitement, écriture
+├── main.go                     lecture des arguments et du fichier, Appelle du traitement, écriture
 ├── regles/                     package contenant toute la logique de transformation
 │   ├── decoupe.go              découpage et recollage (lignes et mots)
 │   ├── guillemet.go            règles des guillemets
@@ -84,7 +84,7 @@ Cas concernés :
 
 ## Choix d'interprétation du sujet
 
-Le sujet est assez vague et laisse à interprétation, voici mes parties pris :
+Le sujet laisse une part d’interprétation ; voici mes partis pris :
 
 - **Lignes indépendantes** : une règle ne peut pas agir sur la ligne précédente. Les lignes vides sont conservées. Ce choix a été confirmé par un examinateur.
 - **`(cap)`** : première lettre en majuscule, le reste du mot en minuscules (`bRIDGE` → `Bridge`).
